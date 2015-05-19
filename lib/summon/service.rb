@@ -11,7 +11,8 @@ module Summon
       @client_key = options[:client_key]
       @log        = Log.new(options[:log])
       @benchmark  = options[:benchmark] || Pass.new
-      @transport  = options[:transport] || Summon::Transport::Http.new(:url => @url, :access_id => @access_id, :secret_key => @secret_key, :client_key => @client_key, :session_id => options[:session_id], :log => @log, :benchmark => @benchmark)
+
+      @transport  = options[:transport] || Summon::Transport::Http.new(:url => @url, :access_id => @access_id, :secret_key => @secret_key, :client_key => @client_key, :session_id => options[:session_id], :log => @log, :benchmark => @benchmark, :open_timeout => options[:open_timeout], :read_timeout => options[:read_timeout])
     end
 
     def version

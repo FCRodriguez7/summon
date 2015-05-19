@@ -16,6 +16,11 @@ module Summon::Transport
       @url        = @options[:url]
       @log        = Summon::Log.new(options[:log])
       @benchmark  = @options[:benchmark] || Summon::Service::Pass.new
+
+      # Default timeouts are huge (60 sec?). 
+      # Set defaults lower (5/10), and also respect overrides
+      @open_timeout = @options[:open_timeout] || 10
+      @read_timeout = @options[:read_timeout] || 20
     end
 
     def get(path, params = {})
@@ -47,6 +52,11 @@ module Summon::Transport
         }
         result = nil
           http = Net::HTTP.new(uri.host, uri.port)
+
+          # Apply timeouts to the http object before using it
+          http.open_timeout = @open_timeout
+          http.read_timeout = @read_timeout
+
           http.start do
             get = Net::HTTP::Get.new("#{uri.path}#{'?' + uri.query if uri.query && uri.query != ''}")
             get.merge! headers
